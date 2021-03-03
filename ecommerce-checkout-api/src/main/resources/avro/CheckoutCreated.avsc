@@ -8,7 +8,7 @@
             "type": ["string"]
         },
         {
-            "name": "satus",
+            "name": "status",
             "type": ["string"]
         }
     ]
