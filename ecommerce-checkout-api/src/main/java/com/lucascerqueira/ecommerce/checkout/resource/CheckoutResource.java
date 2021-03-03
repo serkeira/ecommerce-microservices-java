@@ -1,28 +1,28 @@
 package com.lucascerqueira.ecommerce.checkout.resource;
 
-import com.lucascerqueira.ecommerce.checkout.event.CheckoutCreatedEvent;
-import com.lucascerqueira.ecommerce.checkout.streaming.CheckoutCreatedSource;
+import com.lucascerqueira.ecommerce.checkout.entity.CheckoutEntity;
+import com.lucascerqueira.ecommerce.checkout.service.CheckoutService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/checkout")
+@RequestMapping("/v1/checkout")
 @RequiredArgsConstructor
 public class CheckoutResource {
 
-    private final CheckoutCreatedSource checkoutCreatedSource;
+    private final CheckoutService checkoutService;
 
     @PostMapping("/")
-    public ResponseEntity<Void> create() {
-        final CheckoutCreatedEvent checkoutCreatedEvent = CheckoutCreatedEvent.newBuilder()
-                .setCheckoutCode("123")
+    public ResponseEntity<CheckoutResponse> create(@RequestBody CheckoutRequest checkoutRequest) {
+        final CheckoutEntity checkoutEntity = checkoutService.create(checkoutRequest).orElseThrow();
+        final CheckoutResponse checkoutResponse = CheckoutResponse.builder()
+                .code(checkoutEntity.getCode())
                 .build();
-//        checkoutCreatedSource.output().send(MessageBuilder.withPayload("asdasdasd").build());
-        checkoutCreatedSource.output().send(MessageBuilder.withPayload(checkoutCreatedEvent).build());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(checkoutResponse);
     }
 }

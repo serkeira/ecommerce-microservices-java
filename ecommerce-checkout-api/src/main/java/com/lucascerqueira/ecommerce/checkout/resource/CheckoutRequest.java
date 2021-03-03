@@ -1,9 +1,15 @@
 package com.lucascerqueira.ecommerce.checkout.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-public class CheckoutRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class CheckoutRequest implements Serializable {
 
     private String firstName;
     private String lastName;
